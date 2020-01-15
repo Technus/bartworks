@@ -60,7 +60,7 @@ public class BW_NEI_OreHandler extends TemplateRecipeHandler {
 
     @Override
     public void loadTransferRects() {
-        this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(0,40,40,120),"quickanddirtyneihandler"));
+        this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(0,30,40,110),"quickanddirtyneihandler"));
     }
 
     @Override
@@ -74,6 +74,10 @@ public class BW_NEI_OreHandler extends TemplateRecipeHandler {
             HashSet<ItemStack> result = new HashSet<>();
             Werkstoff.werkstoffHashSet.stream().filter(w -> w.getGenerationFeatures().hasOres()).forEach(w -> result.add(w.get(OrePrefixes.ore)));
             result.forEach(this::loadCraftingRecipes);
+            result.clear();
+            Werkstoff.werkstoffHashSet.stream().filter(w -> w.getGenerationFeatures().hasOres()).forEach(w -> result.add(w.get(OrePrefixes.oreSmall)));
+            result.forEach(this::loadCraftingRecipes);
+            result.clear();
             HashSet<TemplateRecipeHandler.CachedRecipe> hashSet = new HashSet<>(this.arecipes);
             this.arecipes.clear();
             this.arecipes.addAll(hashSet);
@@ -135,7 +139,7 @@ public class BW_NEI_OreHandler extends TemplateRecipeHandler {
         public CachedOreRecipe(BW_OreLayer worldGen, ItemStack result, boolean smallOres) {
             this.worldGen = worldGen;
             this.stack = new PositionedStack(result, 0, 0);
-            this.small=smallOres;
+            this.small=worldGen.mSecondaryMeta == 0 && worldGen.mBetweenMeta == 0 && worldGen.mSporadicMeta == 0 && smallOres;
         }
         boolean small;
         BW_OreLayer worldGen;
