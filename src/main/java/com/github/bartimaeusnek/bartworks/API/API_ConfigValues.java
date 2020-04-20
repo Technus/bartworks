@@ -25,4 +25,6 @@ package com.github.bartimaeusnek.bartworks.API;
 public class API_ConfigValues {
     //One-Side-Only
     public static boolean debugLog = true;
+
+    public static String[] NEI_BW_config;
 }

@@ -132,6 +132,20 @@ public class ConfigHandler {
 
         ConfigHandler.GTppLogDisabler = ConfigHandler.c.get("System", "Disable GT++ Logging", false, "Enables or Disables GT++ Logging.").getBoolean(false);
         API_ConfigValues.debugLog = ConfigHandler.c.get("System", "Enable Debug Log", false, "Enables or Disables the debug log.").getBoolean(false);
+        API_ConfigValues.NEI_BW_config = ConfigHandler.c.get("System", "Hide OrePrefixesFrom NEI", new String[]{
+                "dustTiny",
+                "dustSmall",
+                "crushed",
+                "crushedPurified",
+                "crushedCentrifuged",
+                "nugget",
+                "gemChipped",
+                "gemFlawed",
+                "gemFlawless",
+                "gemExquisite",
+                "dustImpure",
+                "dustPure"
+        }, "Enables or Disables the debug log.").getStringList();
 
         for (int i = 0; i < BWCoreTransformer.CLASSESBEEINGTRANSFORMED.length; i++)
             BWCoreTransformer.shouldTransform[i] = ConfigHandler.c.get("ASM fixes", BWCoreTransformer.DESCRIPTIONFORCONFIG[i] + " in class: " + BWCoreTransformer.CLASSESBEEINGTRANSFORMED[i], true).getBoolean(true);

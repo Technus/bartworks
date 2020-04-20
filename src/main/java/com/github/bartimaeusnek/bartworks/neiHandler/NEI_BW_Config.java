@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,17 @@ package com.github.bartimaeusnek.bartworks.neiHandler;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import com.github.bartimaeusnek.bartworks.API.API_ConfigValues;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.loaders.FluidLoader;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
+import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import cpw.mods.fml.common.Optional;
+import gregtech.api.enums.OrePrefixes;
 import net.minecraft.item.ItemStack;
+
+import java.util.Arrays;
 
 @Optional.Interface(iface = "codechicken.nei.api.API", modid = "NotEnoughItems")
 public class NEI_BW_Config implements IConfigureNEI {
@@ -40,11 +45,22 @@ public class NEI_BW_Config implements IConfigureNEI {
         API.hideItem(new ItemStack(ItemRegistry.TAB));
         API.hideItem(new ItemStack(FluidLoader.bioFluidBlock));
         API.hideItem(new ItemStack(ItemRegistry.bw_fake_glasses));
+
         NEI_BW_Config.sIsAdded = false;
         new BW_NEI_OreHandler();
         new BW_NEI_BioVatHandler(BWRecipes.instance.getMappingsFor(BWRecipes.BACTERIALVATBYTE));
         new BW_NEI_BioLabHandler(BWRecipes.instance.getMappingsFor(BWRecipes.BIOLABBYTE));
         NEI_BW_Config.sIsAdded = true;
+
+        Arrays.stream(API_ConfigValues.NEI_BW_config)
+                .map(e -> WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.valueOf(e), WerkstoffLoader.Bismutite).copy())
+                .forEach(
+                        stack -> {
+                            stack.setItemDamage(Short.MAX_VALUE);
+                            API.hideItem(stack);
+                        }
+                );
+
     }
 
     @Optional.Method(modid = "NotEnoughItems")
