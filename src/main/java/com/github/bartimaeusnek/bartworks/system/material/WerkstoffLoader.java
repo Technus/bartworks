@@ -37,6 +37,7 @@ import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
+import com.github.bartimaeusnek.crossmod.cls.CLSCompat;
 import com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler;
 import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -96,6 +97,7 @@ public class WerkstoffLoader {
     public static ItemList ringMold;
     public static ItemList boltMold;
     public static boolean gtnhGT = false;
+
 
     public static void setUp() {
         try {
@@ -1413,6 +1415,11 @@ public class WerkstoffLoader {
             long timepre = System.nanoTime();
             ProgressManager.ProgressBar progressBar = ProgressManager.push("Register BW Materials", Werkstoff.werkstoffHashSet.size() + 1);
             DebugLog.log("Loading Recipes" + (System.nanoTime() - timepre));
+
+            Integer[] clsArr = new Integer[0];
+            int size = 0;
+            if (LoaderReference.betterloadingscreen)
+                clsArr = CLSCompat.initCls();
             for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
                 long timepreone = System.nanoTime();
                 DebugLog.log("Werkstoff is null or id < 0 ? " + (werkstoff == null || werkstoff.getmID() < 0) + " " + (System.nanoTime() - timepreone));
@@ -1420,6 +1427,8 @@ public class WerkstoffLoader {
                     progressBar.step("");
                     continue;
                 }
+                if (LoaderReference.betterloadingscreen)
+                    size = CLSCompat.invokeStepSize(werkstoff, clsArr, size);
                 DebugLog.log("Werkstoff: " + werkstoff.getDefaultName() + " " + (System.nanoTime() - timepreone));
                 DebugLog.log("Loading Dusts Recipes" + " " + (System.nanoTime() - timepreone));
                 addDustRecipes(werkstoff);
@@ -1454,6 +1463,10 @@ public class WerkstoffLoader {
                 DebugLog.log("Done" + " " + (System.nanoTime() - timepreone));
                 progressBar.step(werkstoff.getDefaultName());
             }
+
+            if (LoaderReference.betterloadingscreen)
+                CLSCompat.disableCls();
+
             progressBar.step("Load Additional Recipes");
             AdditionalRecipes.run();
             ProgressManager.pop(progressBar);
